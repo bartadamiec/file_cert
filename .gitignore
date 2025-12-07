@@ -3,24 +3,22 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# --- Wirtualne Środowisko (To co widzę u Ciebie) ---
+# --- Wirtualne Środowisko ---
 file_cert_venv/
 venv/
 env/
 .venv/
 
-# --- Zmienne środowiskowe i Sekrety (BARDZO WAŻNE) ---
+# --- Zmienne środowiskowe i Sekrety ---
 .env
 .env.local
 
-# --- Twoje dane projektu (File Cert) ---
-# Ignorujemy folder z kluczami, żeby nie wyciekły na GitHuba!
+# --- dane projektu (File Cert) ---
 certs/
-# Ignorujemy przesłane przez użytkowników pliki PDF
 storage/
 uploaded_files/
 
-# --- Pliki Certyfikatów (na wszelki wypadek, gdybyś zapisał je luzem) ---
+# --- Pliki Certyfikatów ---
 *.p12
 *.pfx
 *.pem
@@ -28,7 +26,7 @@ uploaded_files/
 *.csr
 *.crt
 
-# --- IDE i Edytory (np. VS Code, PyCharm) ---
+# --- IDE i Edytory ---
 .vscode/
 .idea/
 
@@ -38,4 +36,6 @@ uploaded_files/
 dump.rdb
 .idea
 
+
+# --- Git ---
 .gitignore
