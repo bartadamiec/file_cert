@@ -1,0 +1,1 @@
+# Funkcje do sprawdzania podpisu

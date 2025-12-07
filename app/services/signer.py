@@ -1,0 +1,1 @@
+# Funkcje do nakładania podpisu

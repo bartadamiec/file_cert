@@ -1,0 +1,1 @@
+# Np. jak wygląda JSON odpowiedzi

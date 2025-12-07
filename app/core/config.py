@@ -1,0 +1,1 @@
+# Ustawienia (np. ścieżka do folderu storage)
