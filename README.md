@@ -1,89 +1,68 @@
-Plan:
-M1 Koncept i Research
-14.10.2025 - 27.10.2025
-Wstępne zdefiniowanie zamysłu projektu
-Znalezienie literatury omawiające zagadnienie
-Znalezienie bibliotek z których będę korzystać
-Kryterium przejścia:
-Zdefiniowany koncept projektu
-Zgromadzenie pozycji literatury
+https://docs.google.com/document/d/1mjJg9eoLCQeHyMP73PZQIEXsJfVzDKS_/edit
+# File Cert: Secure PAdES Signing System
 
-M2
-3.11.2025 -12.11.2025
-Diagram use case w notacji UML 
-Zdefiniowanie MVP produktu
-Abstrakt 
-Utworzenie repozytorium Git
-Wstępna konfiguracja środowiska roboczego
-Udostępnienie folderu z dokumentacją
-Zdobyta wiedza:
-PKI - private key infrastructure
-Podczas podpisu, podpisujące jest uwierzytelniany za pomocą klucza prywatnego (ceryfikat X.509)
-Kryterium przejścia:
-Utworzone reopozytorium Git
-Skonfigurowane środowisko
-Gotowy diagram Use Case
-Zrozumienie PKI
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.109.0-green)
+![Status](https://img.shields.io/badge/Status-In%20Development-yellow)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-M3
-13.11.2025 - 24.11.2025
-Nauka PyHanko
-Nauka FastAPI
-Zdobyta wiedza:
-Struktura podpisu 
-Zakres bajtów które pokrywa podpis
-Funkcja Hashująca
-Polityka modyfikacji
-Kryterium przejścia:
-Podstawowe rozumienie działania PyHanko, FastAPI
-Zdobyta wiedza o strukturze plików PDF
-Udostępnienie folderu z dokumentacją
+**File Cert** to system backendowy zaprojektowany do bezpiecznego, kryptograficznego podpisywania i weryfikacji dokumentów PDF zgodnie ze standardem **PAdES** (PDF Advanced Electronic Signatures). Projekt realizowany jest jako praca inżynierska, kładąc nacisk na bezpieczeństwo danych, infrastrukturę PKI oraz architekturę systemów rozproszonych.
 
-M4 Fundament
-25.11.2025 - 8.12.2025
-Serwer FastAPI działa bez błędów
-Napisać pierwsze endpointy
-Można przesłać PDF przez API (POST), plik zostaje zapisany
-Wygenerowane certyfikaty testowe (.p12, na dysku lokalnym)
-Kryterium przejścia: 
-plik PDF na serwerze
-.p12 na dysku
- 
-M5 Kryptografia i podpis
-9.12.2025 - 22.12.2025
-Endpoint POST /sign pobiera plik z serwera
-Nałożenie podpisu PAdES używając lokalnego certyfikatu .p12
-Utworzenie nowego pliku, który zostaje rozpoznany przez program Adobe Reader jako “podpisany”
+---
 
-Kryterium przejścia: 
-plik PDF z widocznym panelem podpisu
+## 🚀 Kluczowe Funkcjonalności
 
-M6 Weryfikacja i raport
-28.12.2025 - 5.01.2026
-Endpoint POST /verify przyjmuje podpisany plik
-Backend zwraca plik JSON, np.  {"valid": true, "signer": "Jan Kowalski"}
-Generowanie raportu w postaci pliku PDF, potwierdzającego lub negujące weryfikacje
-Endpointy /auth, /login,  generowanie tokenów (JWT) i zabezpieczenie endpointów.
-Kryterium przejścia: 
-API zwraca wartość True dla podpisanego niemodyfikowanego po podpisie pliku lub wartość False, w przypadku, gdy plik jest niepodpisany, bądź został zmodyfikowany po podpisie.
+* **Zarządzanie Plikami:** Bezpieczne przesyłanie i przechowywanie dokumentów PDF.
+* **Podpis Elektroniczny:** Implementacja standardu PAdES (LTV enabled) przy użyciu biblioteki `pyHanko`.
+* **Infrastruktura PKI:** Obsługa kluczy RSA i certyfikatów X.509 (obsługa formatu `.p12`).
+* **Weryfikacja Integralności:** Sprawdzanie poprawności kryptograficznej podpisu oraz integralności pliku (wykrywanie modyfikacji).
+* **Raportowanie:** Generowanie raportów walidacyjnych w formacie PDF.
+* **Klient CLI:** Dedykowane narzędzie wiersza poleceń do interakcji z API.
 
+---
 
-M7 Klient CLI
-6.01.2026 - 19.01.2026
-*Obsługa z poziomu CLI
-Kryterium przejścia: 
-Działający proces z poziomu CLI. Przykład:
-Klient uruchamia skrypt 
->>>python client.py sign <nazwa_pliku>.pdf
-<nazwa_pliku>_signed.pdf
-Skrypt wysyła plik →  czeka na odpowiedź serwera podpisującego → pobiera podpisany plik na dysk lokalny
+## 🛠️ Stack Technologiczny
 
-M8 Final
-20.01.2026 -26.01.2026
-Testowanie programu
-Utworzenie pliku README.md, który opisuje proces instalacji potrzebnych bibliotek oraz uruchomienia od początku programu
-Dokumentacja zredagowana zgodnie ze standardem IEEE
+* **Język:** Python 3.11+
+* **Backend Framework:** FastAPI (ASGI)
+* **Serwer:** Uvicorn
+* **Kryptografia & PDF:** pyHanko, OpenSSL, Cryptography
+* **Walidacja Danych:** Pydantic
+* **Narzędzia:** Git, Swagger UI (OpenAPI)
 
-Kryterium przejścia
-Program działa zgodnie z zamysłem bez błędów
-Dokumentacja zgodna ze standardem IEEE
+---
+
+## 📅 Harmonogram Realizacji (Roadmap)
+
+Projekt realizowany jest w cyklach (Kamieniach Milowych). Poniżej znajduje się szczegółowy harmonogram prac.
+
+### ✅ M1: Koncept i Research
+**Termin:** 14.10.2025 - 27.10.2025
+- [x] Zdefiniowanie wstępnego konceptu projektu.
+- [x] Analiza literatury i standardów (PAdES, PKI).
+- [x] Dobór stosu technologicznego (FastAPI, pyHanko).
+
+### ✅ M2: Projektowanie Systemu
+**Termin:** 03.11.2025 - 12.11.2025
+- [x] Opracowanie diagramów Use Case (UML).
+- [x] Zdefiniowanie MVP (Minimum Viable Product).
+- [x] Konfiguracja repozytorium Git i środowiska CI/CD.
+- [x] Analiza teoretyczna infrastruktury PKI (Private Key Infrastructure).
+
+### ✅ M3: Analiza Techniczna (Deep Dive)
+**Termin:** 13.11.2025 - 24.11.2025
+- [x] Niskopoziomowa analiza struktury PDF (ByteRange, Incremental Update).
+- [x] Nauka biblioteki `pyHanko` oraz frameworka `FastAPI`.
+- [x] Zrozumienie polityki modyfikacji i funkcji skrótu (SHA-256).
+
+### 🚧 M4: Fundament Aplikacji (Obecny Etap)
+**Termin:** 25.11.2025 - 08.12.2025
+- [ ] Implementacja serwera FastAPI (Setup & Configuration).
+- [ ] Stworzenie endpointu `/upload` (obsługa przesyłania plików).
+- [ ] Generowanie testowych certyfikatów X.509 i kontenerów `.p12` (OpenSSL).
+- **Cel:** Działający upload plików i gotowe środowisko kryptograficzne.
+
+### 📅 M5: Implementacja Podpisu (Core)
+**Termin:** 09.12.2025 - 22.12.2025
+- [ ] Implementacja endpointu `/sign`.
+- [ ] Integr
