@@ -55,14 +55,14 @@ Projekt realizowany jest w cyklach (Kamieniach Milowych). Poniżej znajduje się
 - [x] Nauka biblioteki `pyHanko` oraz frameworka `FastAPI`.
 - [x] Zrozumienie polityki modyfikacji i funkcji skrótu (SHA-256).
 
-### 🚧 M4: Fundament Aplikacji (Obecny Etap)
+### ✅ M4: Fundament Aplikacji 
 **Termin:** 25.11.2025 - 08.12.2025
-- [ ] Implementacja serwera FastAPI (Setup & Configuration).
-- [ ] Stworzenie endpointu `/upload` (obsługa przesyłania plików).
-- [ ] Generowanie testowych certyfikatów X.509 i kontenerów `.p12` (OpenSSL).
+- [x] Implementacja serwera FastAPI (Setup & Configuration).
+- [x] Stworzenie endpointu `/upload` (obsługa przesyłania plików).
+- [x] Generowanie testowych certyfikatów X.509 i kontenerów `.p12` (OpenSSL).
 - **Cel:** Działający upload plików i gotowe środowisko kryptograficzne.
 
-### 📅 M5: Implementacja Podpisu (Core)
+### 🚧 M5: Implementacja Podpisu (Core)
 **Termin:** 09.12.2025 - 22.12.2025
 - [ ] Implementacja endpointu `/sign`.
 - [ ] Integr
