@@ -1,10 +1,10 @@
-https://docs.google.com/document/d/1mjJg9eoLCQeHyMP73PZQIEXsJfVzDKS_/edit
+
 # File Cert: Secure PAdES Signing System
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.109.0-green)
 ![Status](https://img.shields.io/badge/Status-In%20Development-yellow)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
+![Dokumentacja](https://docs.google.com/document/d/1mjJg9eoLCQeHyMP73PZQIEXsJfVzDKS_/edit)
 
 **File Cert** to system backendowy zaprojektowany do bezpiecznego, kryptograficznego podpisywania i weryfikacji dokumentów PDF zgodnie ze standardem **PAdES** (PDF Advanced Electronic Signatures). Projekt realizowany jest jako praca inżynierska, kładąc nacisk na bezpieczeństwo danych, infrastrukturę PKI oraz architekturę systemów rozproszonych.
 
@@ -65,4 +65,36 @@ Projekt realizowany jest w cyklach (Kamieniach Milowych). Poniżej znajduje się
 ### 🚧 M5: Implementacja Podpisu (Core)
 **Termin:** 09.12.2025 - 22.12.2025
 - [ ] Implementacja endpointu `/sign`.
-- [ ] Integr
+- [ ] Integracja logiczna z `pyHanko` (nałożenie podpisu PAdES).
+- [ ] Obsługa lokalnego magazynu kluczy.
+- **Cel:** Plik PDF poprawnie rozpoznawany przez Adobe Reader jako "podpisany".
+
+### 📅 M6: Weryfikacja i Raportowanie
+**Termin:** 28.12.2025 - 05.01.2026
+- [ ] Implementacja endpointu `/verify` (walidacja podpisu i integralności).
+- [ ] Generowanie raportów weryfikacji (JSON + PDF).
+- [ ] Zabezpieczenie API (JWT, Auth).
+- **Cel:** System zwraca `True`/`False` w zależności od integralności dokumentu.
+
+### 📅 M7: Klient CLI
+**Termin:** 06.01.2026 - 19.01.2026
+- [ ] Budowa aplikacji klienckiej w Pythonie.
+- [ ] Obsługa komend: `python client.py sign <file>.pdf`.
+- **Cel:** Pełna ścieżka: wysyłka -> podpis -> pobranie z poziomu terminala.
+
+### 📅 M8: Finalizacja i Dokumentacja
+**Termin:** 20.01.2026 - 26.01.2026
+- [ ] Testy końcowe i optymalizacja.
+- [ ] Redakcja dokumentacji technicznej (standard IEEE).
+- [ ] Przygotowanie instrukcji instalacji (Deployment).
+
+---
+
+## 📦 Instalacja i Uruchomienie
+
+*(Instrukcja wstępna - sekcja będzie rozwijana w M8)*
+
+1. **Sklonuj repozytorium:**
+   ```bash
+   git clone [https://github.com/twoj-nick/file-cert.git](https://github.com/twoj-nick/file-cert.git)
+   cd file-cert
