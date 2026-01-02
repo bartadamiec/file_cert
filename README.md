@@ -6,7 +6,7 @@
 ![Status](https://img.shields.io/badge/Status-In%20Development-yellow)
 [Dokumentacja](https://docs.google.com/document/d/1mjJg9eoLCQeHyMP73PZQIEXsJfVzDKS_/edit)
 
-**File Cert** to system backendowy zaprojektowany do bezpiecznego, kryptograficznego podpisywania i weryfikacji dokumentów PDF zgodnie ze standardem **PAdES** (PDF Advanced Electronic Signatures). Projekt realizowany jest jako praca inżynierska, kładąc nacisk na bezpieczeństwo danych, infrastrukturę PKI oraz architekturę systemów rozproszonych.
+**File Cert** to system backendowy zaprojektowany do bezpiecznego, kryptograficznego podpisywania i weryfikacji dokumentów PDF zgodnie ze standardem **PAdES** (PDF Advanced Electronic Signatures). Projekt realizowany, kładąc nacisk na bezpieczeństwo danych, infrastrukturę PKI oraz architekturę systemów rozproszonych.
 
 ---
 
