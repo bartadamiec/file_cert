@@ -15,7 +15,7 @@ env/
 
 # --- dane projektu (File Cert) ---
 certs/
-app/storage/
+storage/
 uploaded_files/
 
 # --- Pliki Certyfikatów ---
