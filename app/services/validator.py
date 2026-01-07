@@ -3,6 +3,7 @@ from pyhanko_certvalidator import ValidationContext
 from pyhanko.keys import load_cert_from_pemder
 from pyhanko.pdf_utils.reader import PdfFileReader
 from pyhanko.sign.validation import validate_pdf_signature
+# from config import ROOT_PATH
 
 def verify_pdf_service(pdf_path: str):
     """
@@ -15,7 +16,7 @@ def verify_pdf_service(pdf_path: str):
     :return: True/False
     """
 
-    cert_path = "../../certs/root_ca.crt"
+    cert_path = "/certs/root_ca.crt"
     root_cert = load_cert_from_pemder(cert_path)
     vc = ValidationContext(trust_roots=[root_cert])
     results = []
@@ -49,4 +50,4 @@ def verify_pdf_service(pdf_path: str):
 
         return is_all_valid, results
 
-print(verify_pdf_service("../../storage/as_klasyczna_signed.pdf"))
+# print(verify_pdf_service("../../storage/as_klasyczna_signed.pdf"))
