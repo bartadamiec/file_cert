@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse
 from app.services.validator import verify_pdf_service
 from app.services.report_generator import report_generator_service
 import shutil
+from app.models.schemas import SignRequest,  VerifyRequest
 from pydantic import BaseModel
 import os
 from pathlib import Path
@@ -22,11 +23,6 @@ async def upload_file(file: UploadFile = File()):
     with open(save_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     return file.filename
-
-class SignRequest(BaseModel): # DTA, waliduje czy wszytko przesyła się do endpointu
-    filename: str  # np. "umowa.pdf"
-    p12_filename: str  # np. "moj_cert.p12"
-    password: str
 
 @router.post("/sign")
 def sign_file(request: SignRequest): # bez async, bo błąd asyncio
@@ -58,9 +54,6 @@ def sign_file(request: SignRequest): # bez async, bo błąd asyncio
         "signed_file": output_filename
     }
 
-
-class VerifyRequest(BaseModel):
-    filename: str  # np. "umowa.pdf"
 
 @router.post("/verify")
 def verify_file(request: VerifyRequest):
