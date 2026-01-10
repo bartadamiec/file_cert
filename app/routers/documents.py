@@ -1,9 +1,13 @@
 # Obsługa plików (/upload, /sign, /verify)
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.services.signer import sign_pdf_service
-import os
+from fastapi.responses import FileResponse
+from app.services.validator import verify_pdf_service
+from app.services.report_generator import report_generator_service
 import shutil
 from pydantic import BaseModel
+import os
+from pathlib import Path
 
 router = APIRouter()
 
@@ -53,3 +57,26 @@ def sign_file(request: SignRequest): # bez async, bo błąd asyncio
         "message": "Plik został podpisany",
         "signed_file": output_filename
     }
+
+
+class VerifyRequest(BaseModel):
+    filename: str  # np. "umowa.pdf"
+
+@router.post("/verify")
+def verify_file(request: VerifyRequest):
+    pdf_to_check = os.path.join("storage", request.filename)
+
+    if not os.path.exists(pdf_to_check):
+        raise HTTPException(status_code=404, detail="File doesn't exists!")
+
+    is_valid, results = verify_pdf_service(pdf_to_check)
+
+    report_generator_service(pdf_to_check, results)
+
+    return FileResponse(path = Path(f'storage/{request.filename[:-4]}_report.pdf'), filename=f"{request.filename[:-4]}_report.pdf")
+     #     {
+     #    "filename": request.filename,
+     #    "status": "valid" if is_valid else "invalid",
+     #    "results": results,
+     #    "report_generated": True
+     # }

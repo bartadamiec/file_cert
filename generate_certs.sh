@@ -1,4 +1,3 @@
-# file_cert/generate_certs.sh
 #!/bin/bash
 
 # Ustawienie folderu docelowego
@@ -22,19 +21,31 @@ openssl genrsa -out $DIR/user.key 2048
 openssl req -new -key $DIR/user.key -out $DIR/user.csr \
     -subj "/C=PL/ST=Mazowieckie/L=Warszawa/O=FileCert Users/CN=Jan Kowalski/emailAddress=jan@example.com"
 
-echo "--- 3. Podpisywanie certyfikatu użytkownika przez Root CA ---"
-# Root CA podpisuje CSR Jana -> powstaje user.crt
-openssl x509 -req -in $DIR/user.csr -CA $DIR/root_ca.crt -CAkey $DIR/root_ca.key -CAcreateserial \
-    -out $DIR/user.crt -days 365 -sha256
+echo "--- 3. Podpisywanie certyfikatu użytkownika przez Root CA (Z DODANIEM UPRAWNIEŃ) ---"
+# Tworzymy tymczasową konfiguraję rozszerzeń, której brakowało wcześniej
+# nonRepudiation - to jest to, czego wymagało PyHanko!
+EXTENSIONS="keyUsage = critical, digitalSignature, nonRepudiation"
 
-echo "✅ Certyfikat Jana podpisany."
+# Root CA podpisuje CSR Jana, wstrzykując wymagane flagi
+openssl x509 -req -in $DIR/user.csr \
+    -CA $DIR/root_ca.crt -CAkey $DIR/root_ca.key -CAcreateserial \
+    -out $DIR/user.crt -days 365 -sha256 \
+    -extfile <(echo "$EXTENSIONS")
+
+echo "✅ Certyfikat Jana podpisany (z flagą nonRepudiation)."
 
 echo "--- 4. Pakowanie do formatu .p12 (Dla Klienta) ---"
-# To jest ten plik, którego użyje pyHanko.
-# Zostaniesz poproszony o hasło (ustaw np. 'tajnehaslo')
+# Usuwamy stary plik p12 jeśli istnieje, żeby nie było konfliktów
+rm -f $DIR/jan_kowalski.p12
+
+# Pakujemy nowy certyfikat
 openssl pkcs12 -export -out $DIR/jan_kowalski.p12 \
     -inkey $DIR/user.key -in $DIR/user.crt \
     -certfile $DIR/root_ca.crt \
-    -name "Jan Kowalski ID"
+    -name "Jan Kowalski ID" \
+    -passout pass:tajnehaslo
 
-echo "🎉 SUKCES! Wszystkie klucze są w folderze /$DIR"
+# UWAGA: Ustawiłem hasło na sztywno: 'tajnehaslo' (dla łatwości testów),
+# żebyś nie musiał go wpisywać ręcznie przy każdym uruchomieniu skryptu.
+
+echo "🎉 SUKCES! Wszystkie nowe klucze są w folderze /$DIR"
