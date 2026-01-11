@@ -6,7 +6,6 @@ from app.services.validator import verify_pdf_service
 from app.services.report_generator import report_generator_service
 import shutil
 from app.models.schemas import SignRequest,  VerifyRequest
-from pydantic import BaseModel
 import os
 from pathlib import Path
 
