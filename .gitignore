@@ -14,7 +14,7 @@ env/
 .env.local
 
 # --- dane projektu (File Cert) ---
-certs/
+app/certs/
 app/storage/
 uploaded_files/
 
