@@ -22,5 +22,7 @@ def report_generator_service(filename: str, results: list[dict]):
     report.add_page()
     for result in results:
         report.add_result(result)
-    report.output(f"{filename[:-4]}_report.pdf")
+    output_file = f"{filename[:-4]}_report.pdf"
+    report.output(output_file)
+    return output_file
 

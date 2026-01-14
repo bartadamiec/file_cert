@@ -27,8 +27,7 @@ def register(
             f.write(content)
         print("[bold green]Successfully registered![/bold green] [bold red]Keep your certificate .p12[/bold red]")
     else:
-        print(r.json())
-        print("[bold red]Something went wrong please try again.[/bold red]")
+        print(f"[bold red]{r.json()["detail"]}[/bold red]")
         raise typer.Exit()
         
 @client.command()
@@ -47,9 +46,15 @@ def login(
 
     if r.status_code == 200:
         path = Path(".")
+
         with open(path / f"{username}.token", "w", encoding='utf-8') as f:
             f.write(token)
+
+        with open(path / "last_user.txt", "w", encoding='utf-8') as f:
+            f.write(username)
+
         print("[bold green]Successfully signed in![/bold green] 15-minutes session started!")
+
     else:
         print("[bold red]Something went wrong please try again.[/bold red]")
         raise typer.Exit()
@@ -61,7 +66,7 @@ def validate_token(token_path: Path, username: str):
         raise typer.Exit()
 
     with open(token_path, "r") as f:
-        token = f.read()
+        token = f.read().strip()
 
     headers = {
         "Authorization": f"Bearer {token}"
@@ -70,8 +75,14 @@ def validate_token(token_path: Path, username: str):
     return headers
 
 @client.command() # File must be in working directory
-def upload(filename: str, username: str, token_path: Path | None = None):
+def upload(
+        filename: Annotated[str, typer.Option(prompt=True)],
+        username: str | None = None,
+        token_path: Path | None = None):
     try:
+        with open(Path("./last_user.txt"), "r", encoding="utf-8") as f:
+            username = f.read()
+
         if token_path == None:
             token_path = Path(f"./{username}.token")
 
@@ -88,22 +99,35 @@ def upload(filename: str, username: str, token_path: Path | None = None):
             typer.Exit()
     except Exception as e:
         print(f"[bold red]{e}[/bold red]")
+        raise typer.Exit()
 
 @client.command()
-def sign(filename: str, username: str | None = None, token_path: Path | None = None):
+def sign(
+        filename: Annotated[str, typer.Option(prompt=True)],
+        password: Annotated[str, typer.Option(prompt=True, hide_input=True)],
+        username: str | None = None,
+        token_path: Path | None = None):
+    try:
+        with open(Path("./last_user.txt"), "r", encoding="utf-8") as f:
+            username = f.read()
+        token_path = Path(f"./{username}.token")
+        headers = validate_token(token_path=token_path, username=username)
 
-    headers = validate_token(token_path=token_path, username=username)
-    files = {"file": open(filename, "rb")}
-    data = {"password": password}
+        json = {
+            "filename": filename,
+            "password": password,
+        }
 
-    r = requests.post(f"{BASE_URL}/sign", headers=headers, files=files, stream=True, data=data)
-    with open(Path(".") / f"{filename}_signed.pdf", "wb") as f:
-        for chunk in r.iter_content(chunk_size=8192):
-            f.write(chunk)
+        r = requests.post(f"{BASE_URL}/sign", headers=headers, stream=True, json=json)
 
-# @client.command()
-# def download(filename: str):
-#
+        with open(Path(".") / f"{filename[:-4]}_signed.pdf", "wb") as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
+        print(f"[bold green]Successfully signed[/bold green] {filename}")
+    except Exception as e:
+        print(f"[bold red]{e}[/bold red]")
+        raise typer.Exit()
+
 # @client.command()
 # def verify(filename: str = typer.Argument()):
 #     pass

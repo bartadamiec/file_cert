@@ -8,8 +8,6 @@ from app.services.ca_service import ca_service
 
 router = APIRouter()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
 @router.post("/register")
 async def register(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     if users_collection.find_one({"username": form_data.username}):
