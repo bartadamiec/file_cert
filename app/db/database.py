@@ -1,7 +1,7 @@
-from pymongo import AsyncMongoClient
+from pymongo import MongoClient
 from app.core.config import MONGO_PATH
 
-client = AsyncMongoClient(MONGO_PATH)
+client = MongoClient(MONGO_PATH)
 
 db = client["file_cert"]
 

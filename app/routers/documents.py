@@ -29,9 +29,9 @@ def sign_file(request: SignRequest): # bez async, bo błąd asyncio
     p12_path = os.path.join("certs", request.p12_filename)
 
     if not os.path.exists(input_pdf_path):
-        raise HTTPException(status_code=404, detail="Plik PDF nie istnieje w folderze storage")
+        raise HTTPException(status_code=404, detail="Upload PDF file first")
     if not os.path.exists(p12_path):
-        raise HTTPException(status_code=404, detail="Certyfikat nie istnieje w folderze certs")
+        raise HTTPException(status_code=404, detail="Cert not found")
 
     output_filename = request.filename.replace(".pdf", "_signed.pdf")
     output_pdf_path = os.path.join("storage", output_filename)
@@ -49,10 +49,14 @@ def sign_file(request: SignRequest): # bez async, bo błąd asyncio
 
     return {
         "status": "success",
-        "message": "Plik został podpisany",
-        "signed_file": output_filename
+        "message": "File has been signed",
+        "signed_file": output_filename,
+        "download": f"To download: client.py download {output_filename}"
     }
 
+# @router.get("/sign")
+# def download_file(request: DownloadFile):
+#     file_path
 
 @router.post("/verify")
 def verify_file(request: VerifyRequest):

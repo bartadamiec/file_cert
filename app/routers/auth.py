@@ -32,10 +32,13 @@ async def register(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
             }
             msg = {"message" : f"{username} successfully registered!"}
             print(msg)
+            with open(f"storage/{username}.p12", "wb") as f:
+                f.write(content)
+
             return Response(content=content, headers=headers, media_type='application/x-pkcs12')
-        except Exception:
+        except Exception as e:
             users_collection.delete_one({"username":form_data.username})
-            raise HTTPException(status_code=400, detail="Something went wrong, please try again.")
+            raise HTTPException(status_code=400, detail=f"{e}Something went wrong, please try again.")
 
 
 @router.post("/login")
