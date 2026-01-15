@@ -8,3 +8,4 @@ class SignRequest(BaseModel): # DTA, waliduje czy wszytko przesyła się do endp
 
 class VerifyRequest(BaseModel):
     filename: str  # np. "umowa.pdf"
+    signer: str

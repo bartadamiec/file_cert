@@ -1,4 +1,4 @@
-# Generowanie certyfikatów i kluczy
+# Generating certificates and keys
 from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography import x509
@@ -16,7 +16,7 @@ def ca_service(username: str, password: str):
                 f.write(user_private_key.private_bytes(
                 encoding=serialization.Encoding.PEM,
                 format=serialization.PrivateFormat.TraditionalOpenSSL,
-                encryption_algorithm=serialization.BestAvailableEncryption(b"password") # to musi być hashed lub .env, to jest haslo do kluucza prywatnego usera
+                encryption_algorithm=serialization.BestAvailableEncryption(password.encode("utf-8")) #to jest haslo do kluucza prywatnego usera
             ))
         except Exception:
             if pk_path.is_file():
@@ -27,16 +27,10 @@ def ca_service(username: str, password: str):
             x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, "Mazowieckie"),
             x509.NameAttribute(NameOID.LOCALITY_NAME, "Warszawa"),
             x509.NameAttribute(NameOID.ORGANIZATION_NAME, "FileCert"),
-            x509.NameAttribute(NameOID.COMMON_NAME, "filecert.com"), # dla jakiej domeny certyfikat jest ważny
-        ])).add_extension(
-            x509.SubjectAlternativeName([
-                x509.DNSName("mysite.com"),
-                x509.DNSName("www.mysite.com"),
-                x509.DNSName("subdomain.mysite.com"),
-            ]),
-            critical=False,
-        ).sign(user_private_key, hashes.SHA256()) #wniosek podpisany przez klucz prywatny użytkownika
-        # Zapisanie wniosku użytkownika
+            x509.NameAttribute(NameOID.COMMON_NAME, username),
+        ])).sign(user_private_key, hashes.SHA256()) # request signed by user's private key
+
+        # saving user's request
         csr_path = Path(f"{STORAGE}/{username}_csr.pem")
         try:
             with open(csr_path, "wb") as f:
@@ -53,7 +47,7 @@ def ca_service(username: str, password: str):
             data = f.read()
             root_cert = x509.load_pem_x509_certificate(data=data)
 
-        # Certyfikat usera
+        # user's certificate
         subject = csr.subject
         issuer = root_cert.subject
 
@@ -86,7 +80,7 @@ def ca_service(username: str, password: str):
                 critical=True,
             ).add_extension(
                 x509.SubjectKeyIdentifier.from_public_key(csr.public_key()),
-                critical=False, # to jest hash klucza, tylko przyśpiesza odszukiwanie
+                critical=False, # key's hash, only accelerating searching
             ).sign(root_private_key, hashes.SHA256())
 
         p12 = serialization.pkcs12.serialize_key_and_certificates(name=username.encode('utf-8'),

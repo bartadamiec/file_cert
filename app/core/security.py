@@ -1,7 +1,7 @@
 # Logika JWT i hashowania haseł
 from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException, Depends
-from jose import jwt
+from jose import jwt, JWTError
 from passlib.context import CryptContext
 from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from app.core.config import OAUTH2_SCHEME
@@ -30,7 +30,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 def get_current_user(token: str = Depends(OAUTH2_SCHEME)):
     try:
-        encoded_token = jwt.decode(token, SECRET_KEY, ALGORITHM)
+        encoded_token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return encoded_token["sub"]
-    except Exception:
+    except JWTError:
         raise HTTPException(status_code=401, detail="Expired token")

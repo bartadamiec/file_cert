@@ -65,7 +65,7 @@ def verify_file(
         request: VerifyRequest,
         current_user: str = Depends(get_current_user)):
 
-    pdf_to_check = os.path.join("storage", f"{current_user}_{request.filename}")
+    pdf_to_check = os.path.join("storage", f"{request.signer}_{request.filename[:-4]}_signed.pdf")
 
     if not os.path.exists(pdf_to_check):
         raise HTTPException(status_code=404, detail="File doesn't exists!")
