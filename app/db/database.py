@@ -1,3 +1,4 @@
+# connection with mongodb
 from pymongo import MongoClient
 from app.core.config import MONGO_PATH
 

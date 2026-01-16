@@ -1,4 +1,4 @@
-# Obsługa plików (/upload, /sign, /verify)
+# endpoints for files (/upload, /sign, /verify)
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 from app.services.signer import sign_pdf_service
 from fastapi.responses import FileResponse
@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 
 router = APIRouter()
-
+# uploading file to /storage
 @router.post("/upload")
 async def upload_file(
         file: UploadFile = File(),

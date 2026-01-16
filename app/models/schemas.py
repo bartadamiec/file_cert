@@ -1,11 +1,11 @@
-# Np. jak wygląda JSON odpowiedzi
+# pydantic models
 from pydantic import BaseModel
 
-class SignRequest(BaseModel): # DTA, waliduje czy wszytko przesyła się do endpointu
-    filename: str  # np. "umowa.pdf"
-    password: str
+class SignRequest(BaseModel): # DTA, validating if everything is the type we want
+    filename: str  # e.g. "paper.pdf"
+    password: str # the same password used to login
 
 
 class VerifyRequest(BaseModel):
-    filename: str  # np. "umowa.pdf"
-    signer: str
+    filename: str  # e.g. "paper.pdf"
+    signer: str # someone who we want to check if this someone sign the file

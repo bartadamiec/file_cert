@@ -1,4 +1,4 @@
-# Ustawienia (np. ścieżka do folderu storage)
+# settings
 import os
 from fastapi.security import OAuth2PasswordBearer
 

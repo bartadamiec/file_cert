@@ -1,4 +1,4 @@
-# Logika JWT i hashowania haseł
+# JWT and password hashing
 from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException, Depends
 from jose import jwt, JWTError

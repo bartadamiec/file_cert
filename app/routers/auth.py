@@ -1,35 +1,38 @@
-# Logowanie (/login, /register)
+# user (/login, /register)
 from fastapi import APIRouter, Depends, HTTPException, Response
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 from app.core.security import get_password_hash, verify_password, create_access_token
 from typing import Annotated # Metadata for type hints
 from app.db.database import users_collection
 from app.services.ca_service import ca_service
 
 router = APIRouter()
-
+# register user
 @router.post("/register")
 async def register(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    if users_collection.find_one({"username": form_data.username}):
+    if users_collection.find_one({"username": form_data.username}): # checking if the same username already exists
         raise HTTPException(status_code=400, detail="Username already used. Please try another username.")
     else:
         try:
+            # taking data from the form
             password = form_data.password
             username = form_data.username
-
+            # creating new user
             users_collection.insert_one(
                 {
                     "username": username,
                     "password": get_password_hash(password)
                 }
             )
-
+            # ca_service returns p12 byte file
             content = ca_service(username=username, password=password)
+            # HTTP headers
             headers = {
                 "Content-Disposition": f"attachment; filename={username}.p12"
             }
             msg = {"message" : f"{username} successfully registered!"}
-            print(msg)
+            print(msg) # visible on server terminal
+            # saving user's .p12 on server
             with open(f"storage/{username}.p12", "wb") as f:
                 f.write(content)
 
@@ -38,21 +41,21 @@ async def register(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
             users_collection.delete_one({"username":form_data.username})
             raise HTTPException(status_code=400, detail=f"{e}Something went wrong, please try again.")
 
-
+# login user
 @router.post("/login")
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    try:
+    try: # trying to log in
         user = users_collection.find_one({"username":form_data.username})
         password = form_data.password
         hashed_password = user['password']
-        if not verify_password(password, hashed_password):
+        if not verify_password(password, hashed_password): # checking if hash match with password from form
             raise HTTPException(status_code=400, detail="Incorrect username or password")
     except TypeError:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
-    token = create_access_token({"sub": user['username']})
+    token = create_access_token({"sub": user['username']}) # sub stands for subject
 
     return {
         "access_token" : token,
         "token_type" : "bearer"
-    }
+    } # widely used type of JSON for JWT
