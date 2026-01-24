@@ -50,5 +50,3 @@ def verify_pdf_service(pdf_path: str):
             })
 
         return is_all_valid, results
-
-# print(verify_pdf_service("../../storage/as_klasyczna_signed.pdf"))

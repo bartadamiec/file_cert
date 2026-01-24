@@ -23,7 +23,7 @@ def register(
         content = r.content
 
         if r.status_code == 200:
-            path = Path(".")
+            path = Path("")
             with open(path / f"{username}.p12", "wb") as f:
                 f.write(content)
             print("[bold green]Successfully registered![/bold green] [bold red]Keep your certificate .p12[/bold red]")
@@ -49,7 +49,7 @@ def login(
         token = content['access_token']
 
         if r.status_code == 200:
-            path = Path(".")
+            path = Path("")
 
             with open(path / f"{username}.token", "w", encoding='utf-8') as f:
                 f.write(token)
@@ -88,7 +88,7 @@ def upload(
         username: str | None = None,
         token_path: Path | None = None):
     try:
-        with open(Path("./last_user.txt"), "r", encoding="utf-8") as f:
+        with open(Path("last_user.txt"), "r", encoding="utf-8") as f:
             username = f.read()
 
         if token_path == None:
@@ -118,7 +118,7 @@ def sign(
         username: str | None = None,
         token_path: Path | None = None):
     try:
-        with open(Path("./last_user.txt"), "r", encoding="utf-8") as f:
+        with open(Path("last_user.txt"), "r", encoding="utf-8") as f:
             username = f.read()
         token_path = Path(f"./{username}.token")
         headers = validate_token(token_path=token_path, username=username)
@@ -131,7 +131,7 @@ def sign(
         r = requests.post(f"{BASE_URL}/sign", headers=headers, stream=True, json=json)
 
         if r.status_code == 200:
-            with open(Path(".") / f"{filename[:-4]}_signed.pdf", "wb") as f:
+            with open(Path("") / f"{filename[:-4]}_signed.pdf", "wb") as f:
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
             print(f"[bold green]Successfully signed[/bold green] {filename}")
@@ -154,7 +154,7 @@ def verify(
         token_path: Path | None = None):
 
         try:
-            with open(Path("./last_user.txt"), "r", encoding="utf-8") as f:
+            with open(Path("last_user.txt"), "r", encoding="utf-8") as f:
                 username = f.read()
             token_path = Path(f"./{username}.token")
             headers = validate_token(token_path=token_path, username=username)
@@ -167,7 +167,7 @@ def verify(
             r = requests.post(f"{BASE_URL}/verify", headers=headers, json=json, stream=True)
 
             if r.status_code == 200:
-                with open(Path(".") / f"{filename[:-4]}_report.pdf", "wb") as f:
+                with open(Path("") / f"{filename[:-4]}_report.pdf", "wb") as f:
                     for chunk in r.iter_content(chunk_size=8192):
                         f.write(chunk)
 

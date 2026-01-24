@@ -11,73 +11,67 @@ import os
 from pathlib import Path
 
 router = APIRouter()
+
 # uploading file to /storage
 @router.post("/upload")
 async def upload_file(
         file: UploadFile = File(),
-        current_user: str = Depends(get_current_user)):
+        current_user: str = Depends(get_current_user)): # must be valid session
 
-    if not file.filename.endswith(".pdf"): # Walidacja czy to plik .pdf
+    if not file.filename.endswith(".pdf"): # file extension validation
         raise HTTPException(status_code=400, detail="Invalid extension. Must be .pdf file")
 
     save_path = f"storage/{current_user}_{file.filename}"
-    os.makedirs("storage", exist_ok=True) # Upewnienie czy folder istnieje
+    os.makedirs("storage", exist_ok=True) # make storage dir if not exists
 
     with open(save_path, "wb") as buffer: # saving file on the server
         shutil.copyfileobj(file.file, buffer)
     return file.filename
 
+# signing file from storage
 @router.post("/sign")
-def sign_file(
+def sign_file(    # without async due to asyncio error
         request: SignRequest,
-        current_user: str = Depends(get_current_user)): # bez async, bo błąd asyncio
+        current_user: str = Depends(get_current_user)):  # must be valid session
 
-    input_pdf_path = os.path.join("storage", f"{current_user}_{request.filename}")
-    p12_path = os.path.join("storage", f"{current_user}.p12")
+    input_pdf_path = os.path.join("storage", f"{current_user}_{request.filename}") # path to file that will be signed
+    p12_path = os.path.join("storage", f"{current_user}.p12") # user's container path
 
+    # validation
     if not os.path.exists(input_pdf_path):
         raise HTTPException(status_code=404, detail="Upload PDF file first")
     if not os.path.exists(p12_path):
         raise HTTPException(status_code=404, detail="Cert not found")
 
-    output_filename = f"{current_user}_" + request.filename.replace(".pdf", "_signed.pdf")
+    output_filename = f"{current_user}_" + request.filename.replace(".pdf", "_signed.pdf") # marking signed document
     output_pdf_path = os.path.join("storage", output_filename)
 
-    # Funkcja podpisująca
+    # signing function
     try:
         sign_pdf_service(
             input_pdf_path=input_pdf_path,
-            output_pdf_path=output_pdf_path, # ścieżka, gdzie pojawi się podpisany dokument
-            p12_path=p12_path, # ścieżka do kontenera, który zawiera metadane
-            p12_password=request.password # password to container
+            output_pdf_path=output_pdf_path, # path where signed document will be stored
+            p12_path=p12_path, # path to container with metadata
+            p12_password=request.password # password to container (same as to log in)
         )
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Sign Error: {str(e)}")
 
-    return FileResponse(path=output_pdf_path, filename=output_filename[len(current_user) + 1:])
+    return FileResponse(path=output_pdf_path, filename=output_filename[len(current_user) + 1:]) # filename in storage is in format: <username>_<filename>_signed.pdf, endpoint returns without <username>_
 
-# @router.get("/sign")
-# def download_file(request: DownloadFile):
-#     file_path
 
 @router.post("/verify")
 def verify_file(
         request: VerifyRequest,
-        current_user: str = Depends(get_current_user)):
-
+        current_user: str = Depends(get_current_user)):  # must be valid session
+    # pdf to check path, client sends <filename>.pdf without, username or _signed suffix
     pdf_to_check = os.path.join("storage", f"{request.signer}_{request.filename[:-4]}_signed.pdf")
 
     if not os.path.exists(pdf_to_check):
         raise HTTPException(status_code=404, detail="File doesn't exists!")
 
-    is_valid, results = verify_pdf_service(pdf_to_check)
+    is_valid, results = verify_pdf_service(pdf_to_check) # verify_pdf_service returns boolean and results in JSON format
 
-    pdf_report = report_generator_service(pdf_to_check, results)
+    pdf_report = report_generator_service(pdf_to_check, results) # returns path to report
 
-    return FileResponse(path = Path(pdf_report), filename=f"{request.filename[:-4]}_report.pdf")
-     #     {
-     #    "filename": request.filename,
-     #    "status": "valid" if is_valid else "invalid",
-     #    "results": results,
-     #    "report_generated": True
-     # }
+    return FileResponse(path = Path(pdf_report), filename=f"{request.filename[:-4]}_report.pdf") # removing ".pdf" from filename

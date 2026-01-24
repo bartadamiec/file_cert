@@ -25,4 +25,3 @@ def report_generator_service(filename: str, results: list[dict]):
     output_file = f"{filename[:-4]}_report.pdf"
     report.output(output_file)
     return output_file
-
