@@ -1,6 +1,13 @@
 from fpdf import FPDF
 
 def report_generator_service(filename: str, results: list[dict]):
+    """
+    Generates verify report
+
+    :param filename: Filename to verify
+    :param results: List of dictionaries (results) from verify_pdf_service
+    :return: File path to the generated PDF report
+    """
     class VerificationReport(FPDF):
         def header(self):
             self.set_font('Arial', 'B', 16)
@@ -20,8 +27,9 @@ def report_generator_service(filename: str, results: list[dict]):
 
     report = VerificationReport()
     report.add_page()
+    # adding result for every sign
     for result in results:
         report.add_result(result)
     output_file = f"{filename[:-4]}_report.pdf"
-    report.output(output_file)
+    report.output(output_file) # saving file
     return output_file

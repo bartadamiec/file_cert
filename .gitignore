@@ -40,3 +40,6 @@ dump.rdb
 # --- Git ---
 .gitignore
 README.md
+github.txt
+
+generate_certs.sh

@@ -6,23 +6,28 @@ from app.core.config import CERTS_DIR, ROOT_CA_CERT_PATH, ROOT_CA_KEY_PATH
 import datetime
 import os
 
-# PLIK MOŻNA URUCHOMIĆ TYLKO RAZ !!!!!
+# FILE CAN BE RUN ONLY ONCE!!!!!
 def generate_root_ca():
     """
-    Tworzy hierarchię CA. Tworzy klucz prywatny oraz certyfikat CA.
-    Można odpalić tylko raz.
+    Making CA hierarchy. Generates private key and CA certificate.
+    Can be run only once!
     """
+
+    ca_password = os.getenv("ROOT_CA_PASSWORD")
+
+    if not ca_password:
+        raise ValueError("Root CA password not found!")
 
     os.makedirs(CERTS_DIR, exist_ok=True)
     try:
         if os.path.exists(ROOT_CA_KEY_PATH) or os.path.exists(ROOT_CA_CERT_PATH):
-            raise FileExistsError
-
+            raise FileExistsError # checking if cert or key exists
+        # generating root private key
         root_key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
         subject = issuer = x509.Name([
             x509.NameAttribute(NameOID.COUNTRY_NAME, "PL"),
             x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, "Mazowieckie"),
-            x509.NameAttribute(NameOID.LOCALITY_NAME, "Warszawa"),
+            x509.NameAttribute(NameOID.LOCALITY_NAME, "Warsaw"),
             x509.NameAttribute(NameOID.ORGANIZATION_NAME, "FileCert"),
             x509.NameAttribute(NameOID.COMMON_NAME, "FileCert Root CA"),
         ])
@@ -43,32 +48,34 @@ def generate_root_ca():
             x509.BasicConstraints(ca=True, path_length=None), critical=True,
         ).add_extension(
             x509.KeyUsage(
-                digital_signature=True,
+                digital_signature=True, # can sign files
                 content_commitment=False,
                 key_encipherment=False,
                 data_encipherment=False,
                 key_agreement=False,
-                key_cert_sign=True,
-                crl_sign=True,
+                key_cert_sign=True, # can sign users certs
+                crl_sign=True, # can sign list users to be banned
                 encipher_only=False,
                 decipher_only=False,
             ),
             critical=True,
         ).add_extension(
             x509.SubjectKeyIdentifier.from_public_key(root_key.public_key()),
-            critical=False, # to jest hash klucza, tylko przyśpiesza odszukiwanie
+            critical=False, # this is key's hash, only accelerating searching
         ).sign(root_key, hashes.SHA256()) # self sign
 
+        # saving key and self-signed cert
         with open(ROOT_CA_KEY_PATH, "wb") as f:
             f.write(root_key.private_bytes(encoding=serialization.Encoding.PEM,
                                            format=serialization.PrivateFormat.TraditionalOpenSSL,
-                                           encryption_algorithm=serialization.BestAvailableEncryption(b'password'))) # z .env powinno być, albo hash
+                                           encryption_algorithm=serialization.BestAvailableEncryption(ca_password.encode("utf-8"))
+                                           ))
 
         with open(ROOT_CA_CERT_PATH, "wb") as f:
             f.write(root_cert.public_bytes(serialization.Encoding.PEM))
 
     except FileExistsError:
-        print("Skrypt już został raz uruchomiony!")
+        print("Script was run once!")
 
 if __name__ == "__main__":
     generate_root_ca()
