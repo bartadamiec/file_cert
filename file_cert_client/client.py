@@ -141,8 +141,8 @@ def upload(
             else:
                 print(f"[bold red]Error {r.status_code}[/bold red]")
                 typer.Exit()
-        except FileNotFoundError:
-            print(f"[bold red]{filename} not found in current working directory.[/bold red]")
+        except FileNotFoundError as e:
+            print(f"[bold red]{e}[/bold red]")
     except JWTError:
         print(f"[bold red]ERROR 401: Inactive session[/bold red]")
         raise typer.Exit()

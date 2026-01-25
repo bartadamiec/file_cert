@@ -26,8 +26,8 @@ def sign_pdf_service(input_pdf_path: str, output_pdf_path: str, p12_path: str, p
     # sign metadata
     signature_meta = signers.PdfSignatureMetadata(
         field_name='Signature',
-        reason='Potwierdzenie autentyczności dokumentu',
-        location='Warszawa, PL',
+        reason='Document Authentication',
+        location='Warsaw, PL',
         use_pades_lta=True, # LTA adding timestamps chain to sign
         subfilter=fields.SigSeedSubFilter.PADES
     )
