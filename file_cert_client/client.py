@@ -47,7 +47,6 @@ def login(
         r = requests.post(f"{BASE_URL}/login", data=data)
         content = r.json()
         token = content['access_token']
-
         if r.status_code == 200:
             path = Path("")
 
@@ -57,14 +56,14 @@ def login(
             with open(path / "last_user.txt", "w", encoding='utf-8') as f:
                 f.write(username)
 
-            print("[bold green]Successfully signed in![/bold green] 15-minutes session started!")
+                print("[bold green]Successfully signed in![/bold green] 15-minutes session started!")
 
         else:
             print(f"[bold red]{r.json()["detail"]}[/bold red]")
             raise typer.Exit()
 
-    except JWTError:
-        print(f"[bold red]ERROR 401: Inactive session[/bold red]")
+    except ConnectionError:
+        print(f"[bold red]Server Error[/bold red]")
         raise typer.Exit()
 
 def validate_token(token_path: Path, username: str):
