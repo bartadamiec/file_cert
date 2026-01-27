@@ -1,9 +1,9 @@
 # settings
-import os
 from fastapi.security import OAuth2PasswordBearer
 import os
 
 SECRET_KEY = os.getenv("SECRET_KEY")
+ROOT_CA_PASSWORD = os.getenv("ROOT_CA_PASSWORD")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
 CERTS_DIR = "app/certs"
