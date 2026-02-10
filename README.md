@@ -1,6 +1,6 @@
 <div align="center">
   
-[![Documentation](https://img.shields.io/badge/Documentation_and_Developing_Process-PDF_(PL)-blue?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](docs/File_Cert_Dokumentacja.pdf)
+[![Documentation](https://img.shields.io/badge/Documentation_and_Developing_Process-PDF_(PL)-blue?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](File_Cert_Dokumentacja.pdf)
 
 <br>
 
